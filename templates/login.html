@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="Login"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css"
+    />
+    <link rel="stylesheet" href="static/css/blog.css"/>
+    <title>Login</title>
+  </head>
+  <body class="login">
+
+  <div class="m-container-small m-padding-tb-large" style="max-width: 40em !important;">
+    <div class="ui container">
+      <div class="ui middle aligned center aligned grid">
+        <div class="column">
+          <h2 class="ui teal image header">
+            <div class="content">
+              Log-in to your account
+            </div>
+          </h2>
+          <form class="ui large form" method="post" action="/login">
+            <div class="ui stacked segment">
+              <div class="field">
+                <div class="ui left icon input">
+                  <i class="user icon"></i>
+                  <input type="text" name="username" placeholder="Username">
+                </div>
+              </div>
+              <div class="field">
+                <div class="ui left icon input">
+                  <i class="lock icon"></i>
+                  <input type="password" name="password" placeholder="Password">
+                </div>
+              </div>
+              <button class="ui fluid large teal submit button">Login</button>
+            </div>
+
+              {% if error%}
+                <div class="ui error message"></div>
+                <div class="ui mini negative message">
+                    {{ error }}
+                </div>
+              {% endif %}
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+    <script src="static/js/jQuery.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+  <script>
+    $(".ui.form").form({
+      fields:{
+        username:{
+          identifier:"username",
+          rules:[{
+            type:"empty",
+            prompt:"Please input your username."
+          }]
+        },
+        password:{
+          identifier:"password",
+          rules:[{
+            type:"empty",
+            prompt:"Please input your password."
+          }]
+        }
+      }
+    })
+  </script>
+  </body>
+</html>
