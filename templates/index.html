@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -22,12 +22,7 @@
           >
           <a href="/release" class="m-item item item-size m-mobile-hide"
             ><i class="idea icon"></i>Release</a>
-          <div class="m-item right item m-mobile-hide">
-            <div class="ui icon inverted transparent input">
-              <input type="text" placeholder="Search" />
-              <i class="search icon"></i>
-            </div>
-          </div>
+
         </div>
       </div>
       <a href="#" class="ui black button m-right-top m-mobile-show" id="menu_button">
@@ -35,7 +30,7 @@
       </a>
     </nav>
 
-    <div class="ui container container-width m-margin-large"">
+    <div class="ui container container-width m-margin-large">
       <div class="ui stackable grid content-padding">
 
           <!-- header -->
@@ -104,18 +99,6 @@
               </div>
             </div>
               {% endfor %}
-          </div>
-
-          <!-- bottom -->
-          <div class="ui bottom attached segment" th:if="${page.totalPages}>1">
-            <div class="ui middle aligned two column grid">
-              <div class="column">
-                <a href="" th:href="@{/frontpage/(page=${page.number}-1)}" th:unless="${page.first}" class="ui blue basic button">Previous page</a>
-              </div>
-              <div class="right aligned column mid-font-size">
-                <a href="" th:href="@{/frontpage/(page=${page.number}+1)}" th:unless="${page.last}" class="ui blue basic button">Next page</a>
-              </div>
-            </div>
           </div>
 
       </div>

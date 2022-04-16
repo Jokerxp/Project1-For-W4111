@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -8,9 +8,9 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css"
     />
-    <link rel="stylesheet" href="../static/css/blog.css" />
-    <link rel="stylesheet" href="../static/css/typo.css" />
-    <link rel="stylesheet" href="../static/lib/prism/prism.css" />
+    <link rel="stylesheet" href="/static/css/blog.css" />
+    <link rel="stylesheet" href="/static/css/typo.css" />
+    <link rel="stylesheet" href="/static/lib/prism/prism.css" />
     <title>Details page</title>
   </head>
   <body>
@@ -25,12 +25,6 @@
           <a href="/release" class="m-item item item-size m-mobile-hide"
             ><i class="idea icon"></i>Release</a
           >
-          <div class="m-item right item m-mobile-hide">
-            <div class="ui icon inverted transparent input">
-              <input type="text" placeholder="Search" />
-              <i class="search icon"></i>
-            </div>
-          </div>
         </div>
       </div>
       <a
@@ -84,7 +78,7 @@
               </div>
             </div>
         {% if blog.share%}
-            <div class="ui attached positive message" >
+            <div class="ui attached positive segment" >
               <div class="ui stackable middle aligned grid">
                 <div class="eleven wide column">
                   <ui class="list">
@@ -95,90 +89,107 @@
               </div>
             </div>
         {% endif %}
-{#            {% if blog.commentable %}#}
-{#            <div class="ui bottom attached segment">#}
-{#              <div id="comment-container" class="ui blue segment">#}
-{#                <div>#}
-{#                  <div class="ui threaded comments" style="max-width: 100%">#}
-{#                  <h3 class="ui dividing header">Comments</h3>#}
-{#                  <div class="comment" th:each="comment : ${comments}">#}
-{#                    <a class="avatar">#}
-{#                      <img src="comment"/>#}
-{#                    </a>#}
-{#                    <div class="content">#}
-{#                      <a class="author">#}
-{#                        <span th:text="${comment.nickname}">Matt</span>#}
-{#                        <div class="ui mini basisc orange label m-padding-small" th:if="${comment.adminComment}">Admin</div>#}
-{#                      </a>#}
-{#                      <div class="metadata">#}
-{#                        <span class="date" th:text="${#dates.format(comment.createTime,'yyyy-MM-dd HH:mm')}">Today at 5:42PM</span>#}
-{#                      </div>#}
-{#                      <div class="text" th:text="${comment.content}">How artistic!</div>#}
-{#                      <div class="actions">#}
-{#                        <a class="reply" data-commentid="1" data-commentnickname="Matt" th:attr="data-commentid=${comment.id},data-commentnickname=${comment.nickname}" onclick="reply(this)" style="color:red">Reply</a>#}
-{#                      </div>#}
-{#                    </div>#}
-{#                    <div class="comments" th:if="${#arrays.length(comment.replyComments)}>0">#}
-{#                      <div class="comment" th:each="reply:${comment.replyComments}">#}
-{#                        <a class="avatar">#}
-{#                          <img src="../static/images/avatar/small/jenny.jpg" th:src="@{${reply.avatar}}"/>#}
-{#                        </a>#}
-{#                        <div class="content">#}
-{#                          <a class="author">#}
-{#                            <span th:text="${reply.nickname}">Jenny Hess</span>#}
-{#                            <div class="ui mini basisc orange label m-padding-small" th:if="${reply.adminComment}">Admin</div>#}
-{#                            <span th:text="|@ ${reply.parentComment.nickname}|" style="color:skyblue">@ Tom</span>#}
-{#                          </a>#}
-{#                          <div class="metadata">#}
-{#                            <span class="date" th:text="${#dates.format(reply.createTime,'yyyy-MM-dd HH:mm')}">Just now</span>#}
-{#                          </div>#}
-{#                          <div class="text" th:text="${reply.content}">#}
-{#                            Elliot you are always so right :)#}
-{#                          </div>#}
-{#                          <div class="actions">#}
-{#                            <a class="reply" th:attr="data-commentid=${reply.id},data-commentnickname=${reply.nickname}"onclick="reply(this)" style="color:red">Reply</a>#}
-{#                          </div>#}
-{#                        </div>#}
-{#                      </div>#}
-{#                    </div>#}
-{#                  </div>#}
-{#                </div>#}
-{#                </div>#}
-{#              </div>#}
-{#              <div id="comment-form" class="ui form">#}
-{#                <input type="hidden" name="blog.id" value="{{blog.bid}}">#}
-{#                <input type="hidden" name="parentComment.id" value='-1'>#}
-{#                <div class="field">#}
-{#                  <textarea#}
-{#                    name="content"#}
-{#                    id=""#}
-{#                    cols="30"#}
-{#                    rows="10"#}
-{#                    placeholder="Please input your comment"#}
-{#                  ></textarea>#}
-{#                </div>#}
-{#                <div class="fields">#}
-{#                  <div class="field">#}
-{#                    <div class="ui left icon input">#}
-{#                      <i class="icon user"></i>#}
-{#                      <input type="text" name="nickname" placeholder="Name" th:value="${session.user}!=null ? ${session.user.nickname}"/>#}
-{#                    </div>#}
-{#                  </div>#}
-{#                  <div class="field">#}
-{#                    <div class="ui left icon input">#}
-{#                      <i class="icon mail"></i>#}
-{#                      <input type="text" name="email" placeholder="Email" th:value="${session.user}!=null ? ${session.user.email}"/>#}
-{#                    </div>#}
-{#                  </div>#}
-{#                  <div class="field m-right m-mobile-submit m-mobile-wide">#}
-{#                    <button id="comment-btn" class="ui blue button m-mobile-wide">#}
-{#                      <i class="icon edit"></i>Submit#}
-{#                    </button>#}
-{#                  </div>#}
-{#                </div>#}
-{#              </div>#}
-{#            </div>#}
-{#            {% endif %}#}
+            {% if blog.commentable %}
+            <div class="ui bottom attached segment">
+              <div id="comment-container" class="ui blue segment">
+                <div>
+                  <div class="ui threaded comments" style="max-width: 100%">
+                  <h3 class="ui dividing header">Comments</h3>
+                      {% for comment in comments %}
+                  <div class="comment">
+                    <a class="avatar">
+                      <img src="{{ comment.avatar }}"/>
+                    </a>
+                    <div class="content">
+                      <a class="author">
+                        <span>{{ comment.username }}</span>
+                      </a>
+                      <div class="metadata">
+                        <span class="date">{{ comment.createtime }}</span>
+                          <form method="post" action="/appreciation/comment">
+                              <input type="hidden" name="commentcid" value="{{ comment.cid }}">
+                              <input type="hidden" name="commentbid" value="{{ comment.bid }}">
+                              <button class="ui button circular"><i class="heart icon"></i></button>
+                              <span> {{ comment.appreciations }}</span>
+                          </form>
+
+                      </div>
+                      <div class="text">{{ comment.content }}</div>
+                      <div class="actions">
+                        <a class="reply" onclick="reply(this)" data-commentid={{ comment.cid }} data-commentusername="{{ comment.username }}" data-rootcomment={{comment.rootcomment}} style="color:red">Reply</a>
+                      </div>
+                    </div>
+                      {% if comment.replys | length > 0%}
+                    <div class="comments">
+                    {% for reply in comment.replys%}
+                      <div class="comment">
+                        <a class="avatar">
+                          <img src="{{ reply.avatar }}"/>
+                        </a>
+                        <div class="content">
+                          <a class="author">
+                            <span >{{ reply.username }}</span>
+                          </a>
+                          <div class="metadata">
+                            <span class="date" >{{ reply.createtime}}</span>
+                              <form method="post" action="/appreciation/reply">
+                              <input type="hidden" name="replycid" value="{{ reply.cid }}">
+                              <input type="hidden" name="replybid" value="{{ reply.bid }}">
+                              <button class="ui button circular"><i class="heart icon"></i></button>
+                              <span> {{ reply.appreciations }}</span>
+                          </form>
+                          </div>
+                          <div class="text">
+                            {{ reply.content }}
+                          </div>
+                          <div class="actions">
+                            <a class="reply" onclick="reply(this)" style="color:red" data-commentid={{reply.cid}} data-commentusername={{reply.username}} data-rootcomment={{reply.rootcomment}} >Reply</a>
+                          </div>
+                        </div>
+                      </div>
+                    {% endfor %}
+                    </div>
+                          {% endif %}
+                  </div>
+                      {% endfor %}
+                </div>
+                </div>
+              </div>
+              <form id="comment-form" class="ui form" method="post" action="/comment">
+                <input type="hidden" name="bid" value="{{blog.bid}}">
+                <input type="hidden" name="parentcomment" value='-1'>
+                  <input type="hidden" name="rootcomment" value="-1">
+                <div class="field">
+                  <textarea
+                    name="content"
+                    id=""
+                    cols="30"
+                    rows="10"
+                    placeholder="Please input your comment"
+                  ></textarea>
+                </div>
+                <div class="fields">
+                  <div class="field">
+                    <div class="ui left icon input">
+                      <i class="icon user"></i>
+                      <input type="text" name="username" placeholder="Name" value={{ session.username }}/>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <div class="ui left icon input">
+                      <i class="icon mail"></i>
+                      <input type="text" name="email" placeholder="Email" value = {{ session.email }}/>
+                    </div>
+                  </div>
+                  <div class="field m-right m-mobile-submit m-mobile-wide">
+                    <button id="comment-btn" class="ui blue button m-mobile-wide">
+                      <i class="icon edit"></i>Submit
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+            {% endif %}
         </div>
       </div>
     </div>
@@ -220,10 +231,6 @@
         }
       })
 
-      $(function(){
-        var blogId = $("[name='blog.id']").val();
-        $("#comment-container").load(/*[[@{/comments/{id}(id=${blog.id})}]]*/"/comments/"+blogId)
-      })
 
       $("#comment-btn").click(function(){
         var verification = $(".ui.form").form("validate form");
@@ -235,17 +242,15 @@
         }
       })
 
-      function postData(){
-        $("#comment-container").load(/*[[@{/comments}]]*/"/comments",{
-          "parentComment.id":$("[name='parentComment.id']").val(),
-          "blog.id" : $("[name='blog.id']").val(),
-          "nickname": $("[name='nickname']").val(),
-          "email" : $("[name='email']").val(),
-          "content":$("[name='content']").val()
-        },function(responseTxt, statusTxt, xhr){
-          $(window).scrollTo($("#comment-container"),500);
-          clearContent();
-        })
+      function reply(obj){
+          $("[name='content']").val('');
+          var cid = $(obj).data("commentid");
+          var commentusername = $(obj).data("commentusername");
+          var rootcomment = $(obj).data("rootcomment");
+          $("[name = 'content']").attr("placeholder","@"+commentusername).focus();
+          $("[name = 'parentcomment']").val(cid);
+          $("[name = 'rootcomment']").val(rootcomment);
+          $(window).scrollTo($("#comment-form"),300);
       }
 
 

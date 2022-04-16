@@ -146,13 +146,14 @@ def index():
 def login():
   username = request.form["username"]
   password = hashlib.md5(request.form["password"].encode()).hexdigest()
-  cursor = g.conn.execute("SELECT uid,username,password FROM users WHERE username = '{}' AND password='{}' ".format(username,password))
+  cursor = g.conn.execute("SELECT uid,username,password,email FROM users WHERE username = '{}' AND password='{}' ".format(username,password))
   results = cursor.fetchall()
   print(results)
   if results:
     uid = results[0]["uid"]
-    session['username'] = username
-    session['uid'] = uid
+    session["email"] = results[0]["email"]
+    session["username"] = username
+    session["uid"] = uid
     return redirect("/index")
   else:
     error = "Username or password is wrong"
@@ -174,10 +175,6 @@ def add():
   uid = session['uid']
   cursor = g.conn.execute("SELECT max(bid) FROM blogs")
   bid = cursor.fetchall()[0][0] + 1
-
-  # cursor = g.conn.execute("SELECT avatar FROM users WHERE uid = {}".format(uid))
-  # avatar = cursor.fetchall()[0][0]
-  # print(avatar)
 
   title = request.form['title']
   content = request.form['content']
@@ -201,12 +198,10 @@ def add():
   cmd = "insert into blogs_own_topics(bid,toid) values(:bid, :toid)"
   g.conn.execute(text(cmd), bid=bid, toid=toid)
 
-
   return redirect('/index')
 
 @app.route("/blog/<id>")
 def blog(id):
-  print(id)
   cursor = g.conn.execute("SELECT * FROM blogs inner join users on blogs.uid = users.uid where bid = '{}' ".format(id))
   results = cursor.fetchall()
   blog = dict(results[0])
@@ -217,8 +212,56 @@ def blog(id):
   cursor = g.conn.execute("SELECT topics.toid toid, topics.name topicname, topics.color topiccolor FROM blogs_own_topics inner join topics on blogs_own_topics.toid = topics.toid"
                           " where bid = '{}' ".format(id))
   topics = cursor.fetchall()
-  # cursor = g.conn.execute("SELECT ")
-  return render_template("blog.html",blog=blog,topics=topics)
+  cursor = g.conn.execute("SELECT * FROM comments,users WHERE bid = {} and comments.uid = users.uid".format(id))
+  all_comments = cursor.fetchall()
+  rootcomments = {comment['cid']:dict(comment) for comment in all_comments if comment['parentcomment'] is None}
+  for v in rootcomments.values():
+    v["replys"] = []
+
+  for comment in all_comments:
+    if comment['parentcomment'] is not None:
+      rootcomments[comment["rootcomment"]]["replys"].append(comment)
+
+  comments = [comment for comment in rootcomments.values()]
+  comments.sort(key = lambda x:x["createtime"],reverse=True)
+  for comment in comments:
+    comment["replys"].sort(key=lambda x:x["createtime"],reverse=True)
+  return render_template("blog.html",blog=blog,topics=topics,comments=comments)
+
+@app.route("/comment",methods=["post"])
+def comment():
+  uid = session["uid"]
+  bid = request.form["bid"]
+
+  cursor = g.conn.execute("SELECT max(cid) FROM comments")
+  cid = cursor.fetchall()[0][0] + 1
+  parentcomment = request.form["parentcomment"] if request.form["parentcomment"] != "-1" else None
+  rootcomment = request.form["rootcomment"] if request.form["rootcomment"] != "-1" else cid
+  content = request.form["content"]
+  createtime = datetime.datetime.now()
+
+
+  cmd = "insert into comments(cid,createtime,uid,appreciations,content,parentcomment,bid,rootcomment) values(:cid, " \
+        ":createtime,:uid,:appreciations,:content,:parentcomment,:bid,:rootcomment)"
+  g.conn.execute(text(cmd), cid=cid,createtime=createtime,uid=uid,appreciations=0,content=content,parentcomment=parentcomment,
+                 bid=bid,rootcomment=rootcomment)
+
+  return redirect("/blog/{}".format(bid))
+
+@app.route("/appreciation/comment",methods=["post"])
+def appreciation_comment():
+  cid = request.form["commentcid"]
+  g.conn.execute("UPDATE comments SET appreciations = appreciations + 1 WHERE cid = {}".format(cid))
+  bid = request.form["commentbid"]
+  return redirect("/blog/{}".format(bid))
+
+@app.route("/appreciation/reply",methods=["post"])
+def appreciation_reply():
+  cid = request.form["replycid"]
+  g.conn.execute("UPDATE comments SET appreciations = appreciations + 1 WHERE cid = {}".format(cid))
+  bid = request.form["replybid"]
+  return redirect("/blog/{}".format(bid))
+
 
 
 if __name__ == "__main__":
